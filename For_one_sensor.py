@@ -7,7 +7,7 @@ from scipy.signal import find_peaks
 import seaborn as sns
 
 'Get data and create massive'
-name=(input('Путь по умолчанию WT901WIFI\\WIFI software-UDP mode pairing network\\data\\20200402\\18.log\n') or 'WT901WIFI\\WIFI software-UDP mode pairing network\\data\\20200402\\18.log')
+name=(input('Путть по умолчанию WT901WIFI\\WIFI software-UDP mode pairing network\\data\\20200402\\18.log\n') or 'WT901WIFI\\WIFI software-UDP mode pairing network\\data\\20200402\\18.log')
 f=open(name,'r')
 a=f.read()
 f.close
