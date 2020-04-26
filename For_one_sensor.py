@@ -9,8 +9,8 @@ import seaborn as sns
 
 'Get data and create massive'
 name = (input(
-    'Путть по умолчанию WT901WIFI\\WIFI software-UDP mode pairing network\\data\\20200402\\18.log\n') or 'WT901WIFI\\WIFI software-UDP mode pairing network\\data\\20200402\\18.log')
-Incl1 = func.open_func(name)
+    'Путь по умолчанию WT901WIFI\\WIFI software-UDP mode pairing network\\data\\20200402\\18.log\n') or 'WT901WIFI\\WIFI software-UDP mode pairing network\\data\\20200402\\18.log')
+Incl1 = np.genfromtxt(name, delimiter=',')[:, 2:26]
 
 # Разделение датчиков (Лучше делать перебором после выбора x_th)
 N_d = 1
@@ -18,6 +18,7 @@ d = 1
 Incl = Incl1[d - 1:-1:N_d, :]
 
 Incl.shape
+
 'Crop massive'
 print('Выбор крайних точек сигнала')
 plt.plot(Incl[:, 3:6])
@@ -34,7 +35,6 @@ ang_vel = Incl[x_th[0]:x_th[1], 3:6]
 ang = Incl[x_th[0]:x_th[1], 6:9]
 mag = Incl[x_th[0]:x_th[1], 9:12]
 qatern = Incl[x_th[0]:x_th[1], 16:20]
-
 
 # Определение начала 1й 5й фаз
 'Выделение плато из ang_v_x'''

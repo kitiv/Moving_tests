@@ -1,5 +1,5 @@
 from numpy import zeros
-def open_func(name):
+def split_func(name):
     f=open(name,'r')
     a=f.read()
     f.close
