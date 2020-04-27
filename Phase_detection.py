@@ -3,16 +3,8 @@ import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 import seaborn as sns
 
-def Phase_detection(Incl):
-    'Crop massive'
-    print('Выбор крайних точек сигнала')
-    plt.plot(Incl[:, 3:6])
-    th = plt.ginput(2)
-    plt.close()
+def Phase_detection(Incl,x_th):
 
-    x_th = [0, 0]
-    x_th[0] = int(th[0][0])
-    x_th[1] = int(th[1][0])
 
     'Create variables'
     acc = Incl[x_th[0]:x_th[1], 0:3]

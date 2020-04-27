@@ -4,7 +4,7 @@ def split_func(name):
     a=f.read()
     f.close
     b=a.split('\n')
-    Incl1=zeros((len(b)-1,24))
+    NofS=list()
     for i in range(0,len(b)-1):
-        Incl1[i,:]=b[i].split(',')[2:26]
-    return Incl1
+        NofS.append(b[i][20:32])
+    return NofS, len(set(NofS))
