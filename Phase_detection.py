@@ -3,21 +3,24 @@ import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 import seaborn as sns
 
-def Phase_detection(Incl,x_th):
+def Phase_detection(Incl):
 
 
     'Create variables'
-    acc = Incl[x_th[0]:x_th[1], 0:3]
-    ang_vel = Incl[x_th[0]:x_th[1], 3:6]
-    ang = Incl[x_th[0]:x_th[1], 6:9]
-    mag = Incl[x_th[0]:x_th[1], 9:12]
-    qatern = Incl[x_th[0]:x_th[1], 16:20]
+    acc = Incl[:, 0:3]
+    ang_vel = Incl[:, 3:6]
+    ang = Incl[:, 6:9]
+    mag = Incl[:, 9:12]
+    qatern = Incl[:, 16:20]
 
-    # Определение начала 1й 5й фаз
+    ######### Определение начала 1й 5й фаз ##########
     'Выделение плато из ang_v_x'''
     '''scipy.signal.find_peaks(x, height=None, 
     threshold=None, distance=None, prominence=None, width=None, wlen=None, rel_height=0.5, plateau_size=None)[source]'''
     print('Определение начала 1 и 5 фаз')
+
+    ' КОСТЫЛЬ: Попытка сделать ступеньки из угловой скорости и по производным найти начало и конец шага '
+
     dx = 20
     a = ang_vel[:, 0]
     p = (abs(a) < dx) * 1
@@ -36,51 +39,91 @@ def Phase_detection(Incl,x_th):
 
     # plt.plot(p)
     # plt.show()
+    print('Print Enter to select the def value')
 
-    [p1, p1y] = find_peaks(-np.diff(p), height=0.5, distance=10)
-    [p5, p5y] = find_peaks(np.diff(p), height=0.5, distance=10)
 
-    p5 = p5 + 1
+    while True:
+        H1 = float(input('H1 def 0.5\n') or '0.5')
+        D1 = float(input('D1 def 10\n') or '10')
+        [p1, p1y] = find_peaks(-np.diff(p), height=H1, distance=D1)
+        print('Начало 1 фазы кол-во точек - ', len(p1))
+        plt.plot(a)
+        plt.plot(p1, p1y["peak_heights"], 'bo')
+        plt.title('Начало 1 фазы кол-во точек - '+str(len(p1)))
+        plt.show()
+        ans = input('If good print 1 \n')
+        if ans == '1':
+            break
+
+    while True:
+        H5 = float(input('H5 def 0.5\n') or '0.5')
+        D5 = float(input('D5 def 10\n') or '10')
+        [p5, p5y] = find_peaks(np.diff(p), height=H5, distance=D5)
+        p5 = p5 + 1
+        print('Начало 5 фазы кол-во точек - ', len(p5))
+        plt.plot(a)
+        plt.plot(p5, p5y["peak_heights"], 'ro')
+        plt.title('Начало 5 фазы кол-во точек - ' + str(len(p5)))
+        plt.show()
+        ans = input('If good print 1 \n')
+        if ans == '1':
+            break
 
     plt.plot(a)
     plt.plot(p1, p1y["peak_heights"], 'bo')
     plt.plot(p5, p5y["peak_heights"], 'ro')
     plt.show()
 
-    # Определение начала 2 фазы
+
+    ########## Определение начала 2 фазы ############
 
     aa = ang[:, 0]
     print('Определение начала 2 фазы')
     while True:
-        H = float(input('def 20\n') or '20')
-        D = float(input('def 25\n') or '25')
-        [p2, p2y] = find_peaks(aa, height=H, distance=D)  # or -np.diff(a)
+        H2 = float(input('def 20\n') or '20')
+        D2 = float(input('def 25\n') or '25')
+        [p2, p2y] = find_peaks(aa, height=H2, distance=D2)  # or -np.diff(a)
+        print('Начало 5 фазы кол-во точек - ', len(p2))
         plt.plot(aa)
         plt.plot(p2, p2y["peak_heights"], 'bo')
+        plt.title('Начало 2 фазы кол-во точек - ' + str(len(p2)))
+        plt.show()
+        print(len(p2))
+        ans = input('If good print 1 \n')
+        if ans == '1':
+            break
+
+    ######## Определение начала 3 фазы #########
+
+    print('Определение начала 3 фазы')
+    while True:
+        H3 = float(input('def 20\n') or '20')
+        D3 = float(input('def 25\n') or '25')
+        [p3, p3y] = find_peaks((-a), height=H3, distance=D3)
+        print('Начало 3 фазы кол-во точек - ', len(p3))
+        plt.plot(a)
+        plt.plot(p3, -p3y["peak_heights"], 'bo')
+        plt.title('Начало 3 фазы кол-во точек - ' + str(len(p3)))
         plt.show()
         ans = input('If good print 1 \n')
         if ans == '1':
             break
 
-    # Определение начала 3 фазы
-    print('Определение начала 3 фазы')
-    H = 20
-    D = 25
-    [p3, p3y] = find_peaks((-a), height=H, distance=D)
-    plt.plot(a)
-    plt.plot(p3, -p3y["peak_heights"], 'bo')
-    plt.show()
-
     # Определение начала 4 фазы
     print('Определение начала 4 фазы')
-    ab = acc[:, 2] - acc[0, 2]
-    H = 0.1
-    D = 25
-    [p4, p4y] = find_peaks(-ab, height=H, distance=D)
-    plt.plot(ab)
-    plt.plot(p4, -p4y["peak_heights"], 'bo')
-    plt.show()
-
+    while True:
+        ab = acc[:, 2] - acc[0, 2]
+        H4 = float(input('def 0.1\n') or '0.1')
+        D4 = float(input('def 25\n') or '25')
+        [p4, p4y] = find_peaks(-ab, height=H4, distance=D4)
+        print('Начало 3 фазы кол-во точек - ', len(p4))
+        plt.plot(ab)
+        plt.plot(p4, -p4y["peak_heights"], 'bo')
+        plt.title('Начало 3 фазы кол-во точек - ' + str(len(p4)))
+        plt.show()
+        ans = input('If good print 1 \n')
+        if ans == '1':
+            break
     '''
     plt.plot(a)
     plt.plot(p1,p1y["peak_heights"]*0,'o')
