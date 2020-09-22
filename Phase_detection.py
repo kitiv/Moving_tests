@@ -3,9 +3,8 @@ import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 import seaborn as sns
 
+
 def Phase_detection(Incl):
-
-
     'Create variables'
     acc = Incl[:, 0:3]
     ang_vel = Incl[:, 3:6]
@@ -41,7 +40,6 @@ def Phase_detection(Incl):
     # plt.show()
     print('Print Enter to select the def value')
 
-
     while True:
         H1 = float(input('H1 def 0.5\n') or '0.5')
         D1 = float(input('D1 def 10\n') or '10')
@@ -49,7 +47,7 @@ def Phase_detection(Incl):
         print('Начало 1 фазы кол-во точек - ', len(p1))
         plt.plot(a)
         plt.plot(p1, p1y["peak_heights"], 'bo')
-        plt.title('Начало 1 фазы кол-во точек - '+str(len(p1)))
+        plt.title('Начало 1 фазы кол-во точек - ' + str(len(p1)))
         plt.show()
         ans = input('If good print 1 \n')
         if ans == '1':
@@ -73,7 +71,6 @@ def Phase_detection(Incl):
     plt.plot(p1, p1y["peak_heights"], 'bo')
     plt.plot(p5, p5y["peak_heights"], 'ro')
     plt.show()
-
 
     ########## Определение начала 2 фазы ############
 
@@ -148,6 +145,18 @@ def Phase_detection(Incl):
         phase_time[2, i] = p4[i] - p3[i]
         phase_time[3, i] = p5[i] - p4[i]
 
+    # FOG
+
+    plt.plot(acc)
+    plt.show()
+    NFog = int(input('Сколько отрезков с FOG \n'))
+    if NFog != 0:
+        pF = np.zeros((NFog + 1, 2))
+        print('Выберите отрезки с FOG')
+        for i in NFog:
+            pF[i, :] = plt.ginput(2)
+            TF = abs(pF[i, 1] - pF[i, 0])
+
     plt.figure(figsize=(10, 8))
     plt.subplot(231)
     sns.distplot(step_time / 20, bins=20, kde=False, rug=True, label='Step_time')
@@ -178,4 +187,4 @@ def Phase_detection(Incl):
     for i in range(0, len(p1) - 1):
         plt.plot(a[p1[i]:p1[i + 1]])
     plt.show()
-    return p1,p1y,p2,p2y,p3,p3y,p4,p4y,p5,p5y,phase_time,step_time
+    return p1, p1y, p2, p2y, p3, p3y, p4, p4y, p5, p5y, phase_time, step_time, NFog, TF
